@@ -3,22 +3,18 @@ using System.Collections;
 
 public class CellManagerScript : MonoBehaviour
 {
-    /*
-        [SerializeField]
-        int posX;
+    [SerializeField]
+    public int posX;
 
-        [SerializeField]
-        int posY;
-    */
+    [SerializeField]
+    public int posY;
+
     [SerializeField]
     BoardManagerScript boardManagerScript;
 
     CellManagerScript myScript;
 
     public Material Mat;
-
-    public int posX;
-    public int posY;
 
     public bool isClicked;
 
@@ -28,7 +24,7 @@ public class CellManagerScript : MonoBehaviour
         Mat = GetComponent<Renderer>().material;
         isClicked = false;
         posX = (int)(transform.position.x + 3.5);
-        posY = (int)(transform.position.y + 3.5);
+        posY = (int)(3.5 - transform.position.y);
     }
 
     // Update is called once per frame
