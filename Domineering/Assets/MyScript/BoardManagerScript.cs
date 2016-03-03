@@ -305,7 +305,7 @@ public class BoardManagerScript : MonoBehaviour
         NearCellToClicked = getCellFromPos(posX + (!Player1 ? 1 : 0), posY + (!Player1 ? 0 : 1));
 
 
-        if (!ClickedCell.isClicked || !NearCellToClicked.isClicked)
+        if (!ClickedCell.isClicked && !NearCellToClicked.isClicked)
         {
             ClickedCell.Mat.color = (Player1 ? Color.cyan : Color.yellow);
             ClickedCell.isClicked = true;
@@ -325,7 +325,7 @@ public class BoardManagerScript : MonoBehaviour
 
     public void ShowCellsToColor(int posX, int posY)
     {
-        Debug.Log("Position clicked, X:" + posX + " , Y: " + posY);
+        Debug.Log("Position pointed, X:" + posX + " , Y: " + posY);
 
 		if (!Move.CanMoveBeDone (posX, posY, Player1 ? 1 : 0, this)) 
 		{
@@ -334,36 +334,97 @@ public class BoardManagerScript : MonoBehaviour
 
         //Récupérer la cellule
         ClickedCell = getCellFromPos(posX , posY );
-       
 
+<<<<<<< HEAD
         NearCellToClicked = getCellFromPos(posX + (!Player1 ? 1 : 0), posY + (!Player1 ? 0 : 1));
+=======
+        if (Player1)
+        {
+            if (posX != 7)
+            {
+                NearCellToClicked = getCellFromPos(posX + (Player1 ? 1 : 0), posY + (Player1 ? 0 : 1));
+                if (!ClickedCell.isClicked && !NearCellToClicked.isClicked)
+                {
+                    ClickedCell.Mat.color = (Player1 ? Color.magenta : Color.green);
+                    NearCellToClicked.Mat.color = (Player1 ? Color.magenta : Color.green);
+                }
+>>>>>>> origin/master
+
+            }
+        }
+        else
+        {
+            if (posY != 7)
+            {
+                NearCellToClicked = getCellFromPos(posX + (Player1 ? 1 : 0), posY + (Player1 ? 0 : 1));
+                if (!ClickedCell.isClicked && !NearCellToClicked.isClicked)
+                {
+                    ClickedCell.Mat.color = (Player1 ? Color.magenta : Color.green);
+                    NearCellToClicked.Mat.color = (Player1 ? Color.magenta : Color.green);
+                }
 
 
-
+<<<<<<< HEAD
         if(NearCellToClicked != null && !ClickedCell.isClicked && !NearCellToClicked.isClicked)
         {
             ClickedCell.Mat.color = (Player1 ? Color.magenta : Color.green);
             NearCellToClicked.Mat.color = (Player1 ? Color.magenta : Color.green);
+=======
+            }
+>>>>>>> origin/master
         }
+        
+
+
+
+        
 
 
     }
 
     public void VoidColorOnMouseExit(int posX, int posY)
     {
-        Debug.Log("Position clicked, X:" + posX + " , Y: " + posY);
+        Debug.Log("Position out, X:" + posX + " , Y: " + posY);
 
         //Récupérer la cellule
         ClickedCell = getCellFromPos(posX, posY);
+<<<<<<< HEAD
         
         
         NearCellToClicked = getCellFromPos(posX + (!Player1 ? 1 : 0), posY + (!Player1 ? 0 : 1));
+=======
+>>>>>>> origin/master
 
-        if (!ClickedCell.isClicked && !NearCellToClicked.isClicked)
+
+        if (Player1)
         {
-            ClickedCell.Mat.color = Color.white;
-            NearCellToClicked.Mat.color = Color.white;
+            if (posX != 7)
+            {
+                NearCellToClicked = getCellFromPos(posX + (Player1 ? 1 : 0), posY + (Player1 ? 0 : 1));
+
+                if (!ClickedCell.isClicked && !NearCellToClicked.isClicked)
+                {
+                    ClickedCell.Mat.color = Color.white;
+                    NearCellToClicked.Mat.color = Color.white;
+                }
+
+            }
         }
+        else
+        {
+            if (posY != 7)
+            {
+                NearCellToClicked = getCellFromPos(posX + (Player1 ? 1 : 0), posY + (Player1 ? 0 : 1));
+
+                if (!ClickedCell.isClicked && !NearCellToClicked.isClicked)
+                {
+                    ClickedCell.Mat.color = Color.white;
+                    NearCellToClicked.Mat.color = Color.white;
+                }
+            }
+        }
+
+
 
     }
 
