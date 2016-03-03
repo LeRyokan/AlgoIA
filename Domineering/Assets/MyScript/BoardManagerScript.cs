@@ -300,20 +300,48 @@ public class BoardManagerScript : MonoBehaviour
 
         //Récupérer la cellule
         ClickedCell = getCellFromPos(posX , posY );
+<<<<<<< HEAD
         
 
         NearCellToClicked = getCellFromPos(posX + (!Player1 ? 1 : 0), posY + (!Player1 ? 0 : 1));
+=======
+>>>>>>> a28d4adbb998f131cf2f314e29d2cdec424bcf8c
 
-
-        if (!ClickedCell.isClicked && !NearCellToClicked.isClicked)
+        if (Player1)
         {
-            ClickedCell.Mat.color = (Player1 ? Color.cyan : Color.yellow);
-            ClickedCell.isClicked = true;
+            if (posX != 7)
+            {
+                NearCellToClicked = getCellFromPos(posX + (Player1 ? 1 : 0), posY + (Player1 ? 0 : 1));
+                if (!ClickedCell.isClicked && !NearCellToClicked.isClicked)
+                {
+                    ClickedCell.Mat.color = (Player1 ? Color.cyan : Color.yellow);
+                    ClickedCell.isClicked = true;
 
-            NearCellToClicked.Mat.color = (Player1 ? Color.cyan : Color.yellow);
-            NearCellToClicked.isClicked = true;
-            Player1 = !Player1;
+                    NearCellToClicked.Mat.color = (Player1 ? Color.cyan : Color.yellow);
+                    NearCellToClicked.isClicked = true;
+                    Player1 = !Player1;
+                }
+            }
         }
+        else
+        {
+            if (posY != 7)
+            {
+                NearCellToClicked = getCellFromPos(posX + (Player1 ? 1 : 0), posY + (Player1 ? 0 : 1));
+                if (!ClickedCell.isClicked && !NearCellToClicked.isClicked)
+                {
+                    ClickedCell.Mat.color = (Player1 ? Color.cyan : Color.yellow);
+                    ClickedCell.isClicked = true;
+
+                    NearCellToClicked.Mat.color = (Player1 ? Color.cyan : Color.yellow);
+                    NearCellToClicked.isClicked = true;
+                    Player1 = !Player1;
+                }
+
+            }
+        }
+
+       
 
 
 
@@ -404,8 +432,8 @@ public class BoardManagerScript : MonoBehaviour
 
                 if (!ClickedCell.isClicked && !NearCellToClicked.isClicked)
                 {
-                    ClickedCell.Mat.color = Color.white;
-                    NearCellToClicked.Mat.color = Color.white;
+                    ClickedCell.Mat.color = Color.black;
+                    NearCellToClicked.Mat.color = Color.black;
                 }
 
             }
@@ -418,8 +446,8 @@ public class BoardManagerScript : MonoBehaviour
 
                 if (!ClickedCell.isClicked && !NearCellToClicked.isClicked)
                 {
-                    ClickedCell.Mat.color = Color.white;
-                    NearCellToClicked.Mat.color = Color.white;
+                    ClickedCell.Mat.color = Color.black;
+                    NearCellToClicked.Mat.color = Color.black;
                 }
             }
         }
