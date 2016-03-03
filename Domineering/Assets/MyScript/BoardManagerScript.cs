@@ -1,15 +1,26 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-
+using UnityEngine.UI;
 public class BoardManagerScript : MonoBehaviour
 {
+
 	public const int INFINI = (1 << 30);
 	public int w = 8;
 	public int h = 8;
 	public CellManagerScript[,] Cells2D = new CellManagerScript[8,8];
 	public Move[] killerMoveTab= new Move[16];
 
+    public int cleanPossibleMoveH = 100;
+    public int cleanPossibleMoveV = 100;
+
+    bool gameWin;
+    bool gameNeedRestart = false;
+     int playerHwin = 0;
+
+
+    [SerializeField]
+    Text EndGame;
 
 	[SerializeField] 
 	bool isThereAHPlayer = true;
@@ -71,7 +82,8 @@ public class BoardManagerScript : MonoBehaviour
 				}
 			}
 		}
-		
+
+        
 		return moves;
 	}
 	
@@ -87,7 +99,7 @@ public class BoardManagerScript : MonoBehaviour
 				}
 			}
 		}
-		
+	    
 		return false;
 	}
 
@@ -116,11 +128,15 @@ public class BoardManagerScript : MonoBehaviour
 		{
 			if (coups_possibles_v == 0)
 			{
+               
+                playerHwin = 1;
 				return INFINI;
 			}
 			
 			if (coups_possibles_h == 0)
 			{
+               
+                playerHwin = 2;
 				return -INFINI;
 			}
 			
@@ -131,14 +147,21 @@ public class BoardManagerScript : MonoBehaviour
 		{
 			if (coups_possibles_h == 0)
 			{
+               
+                playerHwin = 1;
 				return INFINI;
 			}
 			
 			if (coups_possibles_v == 0)
 			{
+               
+                playerHwin = 2;
 				return -INFINI;
 			}
-			
+            
+
+            cleanPossibleMoveH = coups_possibles_h;
+            cleanPossibleMoveV = coups_possibles_v;
 			return coups_possibles_v - coups_possibles_h;
 		}
 		
@@ -282,20 +305,47 @@ public class BoardManagerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Test victoire
+        gameWin = canPlay((Player1 ? 0 : 1));
 
+        if (!gameWin)
+        {
+            if (Player1)
+            {
+                EndGame.text = "PLAYER 1 WIN !";
+                gameNeedRestart = true;
+            }
+            else
+            {
+                EndGame.text = "PLAYER 2 WIN !";
+                gameNeedRestart = true;               
+            }
+        }
+
+        if (gameNeedRestart)
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                Debug.Log("TOUCHE");
+                Application.LoadLevel(0);
+            }
+        }
     }
 
     public void ColorCells(int posX, int posY)
     {
+        
 
 		if (!isThereAHPlayer && !Player1 || !isThereAVPlayer && Player1) 
 		{
 			return;
 		}
-        Debug.Log("Position clicked, X:" + posX + " , Y: " + posY);
+       
+       // Debug.Log("Position clicked, X:" + posX + " , Y: " + posY);
 
 		if (!Move.CanMoveBeDone (posX, posY, Player1 ? 1 : 0, this)) 
 		{
+            
 			return;
 		}
 
@@ -311,6 +361,10 @@ public class BoardManagerScript : MonoBehaviour
 			NearCellToClicked.Mat.color = (Player1 ? Color.cyan : Color.yellow);
 			NearCellToClicked.isClicked = true;
 			Player1 = !Player1;
+            
+           
+           
+           
 		}
 
     }
@@ -321,10 +375,11 @@ public class BoardManagerScript : MonoBehaviour
 
     public void ShowCellsToColor(int posX, int posY)
     {
-        Debug.Log("Position pointed, X:" + posX + " , Y: " + posY);
+        
 
 		if (!Move.CanMoveBeDone (posX, posY, Player1 ? 1 : 0, this)) 
 		{
+            
 			return;
 		}
 
@@ -341,7 +396,7 @@ public class BoardManagerScript : MonoBehaviour
 
     public void VoidColorOnMouseExit(int posX, int posY)
     {
-        Debug.Log("Position out, X:" + posX + " , Y: " + posY);
+        
 		
 		if (Cells2D [posX, posY].isClicked == false) 
 		{
@@ -375,6 +430,12 @@ public class BoardManagerScript : MonoBehaviour
             }
         }
         return null;
+    }
+
+
+    void isGameEnd()
+    {
+
     }
 
 }
