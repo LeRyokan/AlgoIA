@@ -300,12 +300,11 @@ public class BoardManagerScript : MonoBehaviour
 
         //Récupérer la cellule
         ClickedCell = getCellFromPos(posX , posY );
-<<<<<<< HEAD
+
         
 
         NearCellToClicked = getCellFromPos(posX + (!Player1 ? 1 : 0), posY + (!Player1 ? 0 : 1));
-=======
->>>>>>> a28d4adbb998f131cf2f314e29d2cdec424bcf8c
+
 
         if (Player1)
         {
@@ -363,9 +362,9 @@ public class BoardManagerScript : MonoBehaviour
         //Récupérer la cellule
         ClickedCell = getCellFromPos(posX , posY );
 
-<<<<<<< HEAD
+
         NearCellToClicked = getCellFromPos(posX + (!Player1 ? 1 : 0), posY + (!Player1 ? 0 : 1));
-=======
+
         if (Player1)
         {
             if (posX != 7)
@@ -376,7 +375,7 @@ public class BoardManagerScript : MonoBehaviour
                     ClickedCell.Mat.color = (Player1 ? Color.magenta : Color.green);
                     NearCellToClicked.Mat.color = (Player1 ? Color.magenta : Color.green);
                 }
->>>>>>> origin/master
+
 
             }
         }
@@ -391,22 +390,11 @@ public class BoardManagerScript : MonoBehaviour
                     NearCellToClicked.Mat.color = (Player1 ? Color.magenta : Color.green);
                 }
 
-
-<<<<<<< HEAD
-        if(NearCellToClicked != null && !ClickedCell.isClicked && !NearCellToClicked.isClicked)
-        {
-            ClickedCell.Mat.color = (Player1 ? Color.magenta : Color.green);
-            NearCellToClicked.Mat.color = (Player1 ? Color.magenta : Color.green);
-=======
             }
->>>>>>> origin/master
+
+
+
         }
-        
-
-
-
-        
-
 
     }
 
@@ -416,12 +404,6 @@ public class BoardManagerScript : MonoBehaviour
 
         //Récupérer la cellule
         ClickedCell = getCellFromPos(posX, posY);
-<<<<<<< HEAD
-        
-        
-        NearCellToClicked = getCellFromPos(posX + (!Player1 ? 1 : 0), posY + (!Player1 ? 0 : 1));
-=======
->>>>>>> origin/master
 
 
         if (Player1)
