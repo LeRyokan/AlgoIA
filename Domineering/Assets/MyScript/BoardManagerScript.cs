@@ -241,7 +241,205 @@ public class BoardManagerScript : MonoBehaviour
 		
 		return moves[best_evaluation_index];
 	}
+
+	int MinScore(int p_h_or_v, int depth, int rootdepth, int alpha, int beta)
+	{
+		int eva = evaluate(p_h_or_v);
+		
+		if (depth == 0)
+		{
+			return eva;
+		}
+		
+		List<Move> moves = PossibleMoves(p_h_or_v);
+		
+		Move killerMove = killerMoveTab[rootdepth - depth];
+		if (killerMove.legal && killerMove.CanBeDone(this))
+		{
+			moves.Insert(0, killerMove);
+		}
+		
+		if (moves.Count == 0)
+		{
+			return eva;
+		}
+		
+		for (int i = 0; i < moves.Count; i++)
+		{
+			this.DoMove(moves[i]);
+			int moveScore = this.MaxScore(p_h_or_v, depth - 1, rootdepth, -beta, -alpha);
+			this.UndoMove();
+			
+			if (moveScore == INFINI)
+			{
+				return moveScore;
+			}
+			
+			if ( (moveScore < beta) )
+			{
+				beta = moveScore;
+				killerMoveTab[rootdepth - depth] = moves[i];
+				
+				if (alpha >= beta)
+				{
+					return alpha;
+				}
+			}
+		}
+		
+		return beta;	
+	}
+
+	int MaxScore(int p_h_or_v, int depth, int rootdepth, int alpha, int beta)
+	{
+		int eva = evaluate(p_h_or_v);
+		
+		if (depth == 0)
+		{
+			return eva;
+		}
+		
+		List<Move> moves = PossibleMoves(p_h_or_v);
+		
+		Move killerMove = killerMoveTab[rootdepth - depth];
+		if (killerMove.legal && killerMove.CanBeDone(this))
+		{
+			moves.Insert(0, killerMove);
+		}
+		
+		if (moves.Count == 0)
+		{
+			return eva;
+		}
+		
+		for (int i = 0; i < moves.Count; i++)
+		{
+			this.DoMove(moves[i]);
+			int moveScore = this.MinScore(p_h_or_v, depth - 1, rootdepth, -beta, -alpha);
+			this.UndoMove();
+			
+			if (moveScore == INFINI)
+			{
+				return moveScore;
+			}
+			
+			if ( (moveScore > alpha) )
+			{
+				alpha = moveScore;
+				killerMoveTab[rootdepth - depth] = moves[i];
+				
+				if (alpha >= beta)
+				{
+					return beta;
+				}
+			}
+		}
+		
+		return alpha;
+		
+	}
+
+	int MinScoreHistory(int p_h_or_v, int depth, int rootdepth, int alpha, int beta)
+	{
+		int eva = evaluate(p_h_or_v);
+		
+		if (depth == 0)
+		{
+			return eva;
+		}
+		
+		List<Move> moves = PossibleMoves(p_h_or_v);
+		
+		Move killerMove = killerMoveTab[rootdepth - depth];
+		if (killerMove.legal && killerMove.CanBeDone(this))
+		{
+			moves.Insert(0, killerMove);
+		}
+		
+		if (moves.Count == 0)
+		{
+			return eva;
+		}
+
+
+		moves.Sort (compareMoves);
+
+		for (int i = 0; i < moves.Count; i++)
+		{
+			this.DoMove(moves[i]);
+			int moveScore = this.MaxScore(p_h_or_v, depth - 1, rootdepth, -beta, -alpha);
+			this.UndoMove();
+			
+			if (moveScore == INFINI)
+			{
+				return moveScore;
+			}
+			
+			if ( (moveScore < beta) )
+			{
+				beta = moveScore;
+				
+				if (alpha >= beta)
+				{
+					AddMoveToHistory(moves[i], depth);
+					return alpha;
+				}
+			}
+		}
+		
+		return beta;	
+	}
 	
+	int MaxScoreHistory(int p_h_or_v, int depth, int rootdepth, int alpha, int beta)
+	{
+		int eva = evaluate(p_h_or_v);
+		
+		if (depth == 0)
+		{
+			return eva;
+		}
+		
+		List<Move> moves = PossibleMoves(p_h_or_v);
+		
+		Move killerMove = killerMoveTab[rootdepth - depth];
+		if (killerMove.legal && killerMove.CanBeDone(this))
+		{
+			moves.Insert(0, killerMove);
+		}
+		
+		if (moves.Count == 0)
+		{
+			return eva;
+		}
+
+		moves.Sort (compareMoves);
+		
+		for (int i = 0; i < moves.Count; i++)
+		{
+			this.DoMove(moves[i]);
+			int moveScore = this.MinScore(p_h_or_v, depth - 1, rootdepth, -beta, -alpha);
+			this.UndoMove();
+			
+			if (moveScore == INFINI)
+			{
+				return moveScore;
+			}
+			
+			if ( (moveScore > alpha) )
+			{
+				alpha = moveScore;
+				
+				if (alpha >= beta)
+				{
+					AddMoveToHistory(moves[i], depth);
+					return beta;
+				}
+			}
+		}
+		
+		return alpha;
+		
+	}
 	int NegaMaxScore(int p_h_or_v, int depth, int rootdepth, int alpha, int beta, bool min)
 	{
 		int eva = evaluate(p_h_or_v);
@@ -290,6 +488,7 @@ public class BoardManagerScript : MonoBehaviour
 		return alpha;
 	}
 
+
 	int NegaMaxScoreHistory(int p_h_or_v, int depth, int rootdepth, int alpha, int beta, bool min)
 	{
 		int eva = evaluate(p_h_or_v);
@@ -326,13 +525,53 @@ public class BoardManagerScript : MonoBehaviour
 				
 				if (alpha >= beta)
 				{
-					AddMoveToHistory(moves[i], rootdepth - depth); 
+					AddMoveToHistory(moves[i], depth); 
 					return beta;
 				}
 			}
 		}
 		
 		return alpha;
+	}
+
+	public Move MinMaxAlphaBeta(int p_h_or_v, int profondeur)
+	{
+		AllocateKillerMoveTab (profondeur);
+		int bestMoveIndex = -1;
+		int bestMoveScore = -1;
+		int alpha = -INFINI;
+		int beta = INFINI;
+		
+		List<Move> moves = PossibleMoves(p_h_or_v);
+		
+		for (int i = 0; i < moves.Count; i++) 
+		{
+			this.DoMove(moves[i]);	
+			int moveScore = MaxScore(p_h_or_v, profondeur - 1, profondeur, alpha, beta);
+			this.UndoMove();
+			
+			if (moveScore == INFINI)
+			{
+				return moves[i];
+			}
+			
+			if (bestMoveIndex == -1 || moveScore > bestMoveScore)
+			{
+				bestMoveIndex = i;
+				bestMoveScore = moveScore;
+				if (bestMoveScore > alpha)
+				{
+					alpha = bestMoveScore;
+					
+					if (alpha > beta)
+					{
+						return moves[i];
+					}
+				}
+			}
+		}
+		
+		return moves[bestMoveIndex];
 	}
 
 	public Move NegaMove(int p_h_or_v, int profondeur)
@@ -349,6 +588,46 @@ public class BoardManagerScript : MonoBehaviour
 		{
 			this.DoMove(moves[i]);	
 			int moveScore = ((profondeur % 2 == 1) ? 1 :-1 ) * NegaMaxScore(p_h_or_v, profondeur - 1, profondeur, alpha, beta, false);
+			this.UndoMove();
+			
+			if (moveScore == INFINI)
+			{
+				return moves[i];
+			}
+			
+			if (bestMoveIndex == -1 || moveScore > bestMoveScore)
+			{
+				bestMoveIndex = i;
+				bestMoveScore = moveScore;
+				if (bestMoveScore > alpha)
+				{
+					alpha = bestMoveScore;
+					
+					if (alpha > beta)
+					{
+						return moves[i];
+					}
+				}
+			}
+		}
+		
+		return moves[bestMoveIndex];
+	}
+
+	public Move MinMaxAlphaBetaHistory(int p_h_or_v, int profondeur)
+	{
+		AllocateHistoryTab();
+		int bestMoveIndex = -1;
+		int bestMoveScore = -1;
+		int alpha = -INFINI;
+		int beta = INFINI;
+		
+		List<Move> moves = PossibleMoves(p_h_or_v);
+		
+		for (int i = 0; i < moves.Count; i++) 
+		{
+			this.DoMove(moves[i]);	
+			int moveScore = MaxScoreHistory(p_h_or_v, profondeur - 1, profondeur, alpha, beta);
 			this.UndoMove();
 			
 			if (moveScore == INFINI)
