@@ -65,7 +65,6 @@ LightmapSettings:
     m_TextureCompression: 1
     m_FinalGather: 0
     m_FinalGatherRayCount: 1024
-    m_ReflectionCompression: 2
   m_LightmapSnapshot: {fileID: 0}
   m_RuntimeCPUUsage: 25
 --- !u!196 &4
@@ -85,6 +84,9 @@ NavMeshSettings:
     cellSize: .166666672
     manualCellSize: 0
   m_NavMeshData: {fileID: 0}
+--- !u!127 &5
+LevelGameManager:
+  m_ObjectHideFlags: 0
 --- !u!114 &44359761 stripped
 MonoBehaviour:
   m_PrefabParentObject: {fileID: 11477388, guid: 4e4bf5352a05b1f41b48f72e4a2ba870,
@@ -1373,7 +1375,7 @@ MonoBehaviour:
   h: 8
   cleanPossibleMoveH: 100
   cleanPossibleMoveV: 100
-  playerHwin: 0
+  EndGame: {fileID: 0}
   isThereAHPlayer: 1
   isThereAVPlayer: 1
   Player1: 1
@@ -1853,14 +1855,15 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 985111892}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f6a2c4e93f41ed94ba69ab7a3703ca2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   board: {fileID: 857937073}
   profondeur: 5
-  h_or_v: 1
+  h_or_v: 0
+  History: 0
 --- !u!114 &985111895
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1873,8 +1876,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   board: {fileID: 857937073}
-  profondeur: 1
+  profondeur: 5
   h_or_v: 1
+  History: 0
 --- !u!1001 &986224545
 Prefab:
   m_ObjectHideFlags: 0
@@ -2845,12 +2849,10 @@ Camera:
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
-  m_TargetEye: 3
   m_HDR: 0
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: .0219999999
-  m_StereoMirrorMode: 0
 --- !u!4 &1562873884
 Transform:
   m_ObjectHideFlags: 0
