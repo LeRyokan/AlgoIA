@@ -21,6 +21,11 @@ public struct Move
 		h_or_v = p_h_or_v;
 		legal = true;
 	}
+
+	public int GetCode(BoardManagerScript board)
+	{
+		return x + (y * board.w) + (h_or_v * board.w * board.h);
+	}
 	
 	
 	public static bool CanMoveBeDone(int p_x, int p_y, int p_h_or_v, BoardManagerScript board)

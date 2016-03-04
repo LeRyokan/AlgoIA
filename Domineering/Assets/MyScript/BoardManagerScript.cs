@@ -39,6 +39,53 @@ public class BoardManagerScript : MonoBehaviour
 
 	Stack<Move> movesDone = new Stack <Move>();
 
+	Dictionary<int, int> historyTab = new Dictionary<int, int> ();
+
+
+
+	int compareMoves(Move m1, Move m2)
+	{
+		int v1 = GetMoveValue (m1);
+		int v2 = GetMoveValue (m2);
+		return v1 < v2 ? -1 : (v1 == v2 ? 0 : 1);
+	} 
+
+	int GetMoveValue(Move move)
+	{
+		int code = move.GetCode (this);
+		
+		if (historyTab.ContainsKey(code) ) 
+		{
+			return  historyTab[code];				
+		}
+
+		return 0;
+	}
+
+	void AddMoveToHistory(Move move, int profondeur)
+	{
+		int code = move.GetCode (this);
+		int val = 0;
+
+		if (historyTab.ContainsKey(code) ) 
+		{
+			val += historyTab[code];
+			historyTab.Remove(code);	
+		}
+
+		historyTab.Add (code, (int)(val + Mathf.Pow (4, profondeur)) );
+	}
+
+	void AllocateHistoryTab()
+	{			
+		if (historyTab == null)
+		{
+			historyTab = new Dictionary<int, int> (w*h*2);
+		}
+
+		historyTab.Clear ();
+	}
+
 	void AllocateKillerMoveTab(int size)
 	{			
 		killerMoveTab = new Move[size];
@@ -242,10 +289,55 @@ public class BoardManagerScript : MonoBehaviour
 		
 		return alpha;
 	}
+
+	int NegaMaxScoreHistory(int p_h_or_v, int depth, int rootdepth, int alpha, int beta, bool min)
+	{
+		int eva = evaluate(p_h_or_v);
+		
+		if (depth == 0)
+		{
+			return eva;
+		}
+		
+		List<Move> moves = PossibleMoves(p_h_or_v);
 	
+		
+		if (moves.Count == 0)
+		{
+			return eva;
+		}
+
+		moves.Sort( compareMoves);
+
+		for (int i = 0; i < moves.Count; i++)
+		{
+			this.DoMove(moves[i]);
+			int moveScore = -this.NegaMaxScoreHistory(p_h_or_v, depth - 1, rootdepth, -beta, -alpha, !min);
+			this.UndoMove();
+			
+			if (moveScore == INFINI)
+			{
+				return moveScore;
+			}
+			
+			if ( (moveScore > alpha) )
+			{
+				alpha = moveScore;
+				
+				if (alpha >= beta)
+				{
+					AddMoveToHistory(moves[i], rootdepth - depth); 
+					return beta;
+				}
+			}
+		}
+		
+		return alpha;
+	}
+
 	public Move NegaMove(int p_h_or_v, int profondeur)
 	{
-		AllocateKillerMoveTab(profondeur);
+		AllocateKillerMoveTab (profondeur);
 		int bestMoveIndex = -1;
 		int bestMoveScore = -1;
 		int alpha = -INFINI;
@@ -283,7 +375,47 @@ public class BoardManagerScript : MonoBehaviour
 		return moves[bestMoveIndex];
 	}
 
-    // Use this for initialization
+	public Move NegaMoveHistory(int p_h_or_v, int profondeur)
+	{
+		AllocateHistoryTab ();
+		int bestMoveIndex = -1;
+		int bestMoveScore = -1;
+		int alpha = -INFINI;
+		int beta = INFINI;
+		
+		List<Move> moves = PossibleMoves(p_h_or_v);
+		
+		for (int i = 0; i < moves.Count; i++) 
+		{
+			this.DoMove(moves[i]);	
+			int moveScore = ((profondeur % 2 == 1) ? 1 :-1 ) * NegaMaxScoreHistory(p_h_or_v, profondeur - 1, profondeur, alpha, beta, false);
+			this.UndoMove();
+			
+			if (moveScore == INFINI)
+			{
+				return moves[i];
+			}
+			
+			if (bestMoveIndex == -1 || moveScore > bestMoveScore)
+			{
+				bestMoveIndex = i;
+				bestMoveScore = moveScore;
+				if (bestMoveScore > alpha)
+				{
+					alpha = bestMoveScore;
+					
+					if (alpha >= beta)
+					{
+						return moves[i];
+					}
+				}
+			}
+		}
+		
+		return moves[bestMoveIndex];
+	}
+
+	// Use this for initialization
     void Start()
     {
 		int x = 0;
